@@ -3,4 +3,4 @@
 I write two API ( by node JS) :
     1. For receieve object from client ( method POST)
     2. Get data from server. ( method GET)
-2. Crawler_JAVA use for show result of crawler.
+2. Crawler_Client use for show result of crawler.
