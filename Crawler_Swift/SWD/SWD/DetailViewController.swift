@@ -10,6 +10,8 @@ import UIKit
 import Fuzi
 import Alamofire
 import SwiftyJSON
+
+
 class DetailApartment : NSObject {
     var imgURL : String
     var title : String
@@ -272,7 +274,7 @@ class DetailViewController: LowestViewController {
                                          "City" : bdso.city.replacingOccurrences(of: "\n", with: ""),
                                          "District" : bdso.district.replacingOccurrences(of: "\n", with: ""),
                                          "NumberOfBedrooms" : bdso.numberOfBedRooms.replacingOccurrences(of: "\n", with: ""),
-                                         "PrimaryKey" : (bdso.project + bdso.address + bdso.floor + bdso.roomNumber + bdso.area).replacingOccurrences(of: "\n", with: ""),
+                                         "PrimaryKey" : (bdso.project + bdso.address + bdso.floor + bdso.roomNumber + bdso.area).replacingOccurrences(of: "\n", with: "").MD5() ,
                                          "NumberOfBathrooms" : bdso.numberOfBathRooms.replacingOccurrences(of: "\n", with: "")]
         Alamofire.request("https://apartment-crawl.herokuapp.com/api/apartments", method: .post, parameters: param).responseJSON(completionHandler: { (response) in
             let data = JSON.init(data: response.data!)
@@ -282,5 +284,20 @@ class DetailViewController: LowestViewController {
             
         })
 
+    }
+    
+}
+extension String {
+    func MD5() -> String {
+        let length = Int(CC_MD5_DIGEST_LENGTH)
+        var digest = [UInt8](repeating: 0, count: length)
+        if let d = self.data(using: String.Encoding.utf8) {
+            d.withUnsafeBytes { (body: UnsafePointer<UInt8>) in
+                CC_MD5(body, CC_LONG(d.count), &digest)
+            }
+        }
+        return (0..<length).reduce("") {
+            $0 + String(format: "%02x", digest[$1])
+        }
     }
 }
